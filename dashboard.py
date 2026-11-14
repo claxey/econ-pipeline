@@ -1,4 +1,4 @@
-"""Streamlit dashboard: python -m streamlit run dashboard.py"""
+
 import os
 import sqlite3
 
@@ -45,9 +45,9 @@ def warehouse_engine(url):
 
 try:
     if WAREHOUSE_URL:
-        data = read_warehouse(warehouse_engine(WAREHOUSE_URL))   # Postgres + dbt tables
+        data = read_warehouse(warehouse_engine(WAREHOUSE_URL))   
     else:
-        first_run()                                               # SQLite, built on first start
+        first_run()                                          
         data = read_sqlite(DB, TRACKER)
 except Exception as exc:
     st.error(f"Could not load the data: {exc}")
