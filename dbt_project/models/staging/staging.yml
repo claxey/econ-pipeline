@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: stg_world_bank_observations
+    description: Cleaned raw data, one row per indicator, country and year (latest loaded value).
+    tests:
+      - unique_combination:
+          columns: [source_id, country_code, year]
+    columns:
+      - name: source_id
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['gdp_growth', 'cpi_inflation', 'unemployment']
+      - name: country_code
+        tests:
+          - not_null
+          - relationships:
+              to: ref('country_codes')
+              field: country_code
+      - name: year
+        tests:
+          - not_null
+      - name: value
+        tests:
+          - not_null

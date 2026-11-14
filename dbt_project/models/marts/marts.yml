@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: dim_country
+    columns:
+      - name: country_code
+        tests: [unique, not_null]
+  - name: dim_indicator
+    columns:
+      - name: source_id
+        tests: [unique, not_null]
+  - name: fct_indicator_yearly
+    description: Cleaned yearly series with year-on-year change and 5-year average.
+    tests:
+      - unique_combination:
+          columns: [source_id, country_code, year]
+    columns:
+      - name: source_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_indicator')
+              field: source_id
+      - name: country_code
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_country')
+              field: country_code
+      - name: value
+        tests: [not_null]
+  - name: fct_indicator_revisions
+    description: Values the source changed between loads.

@@ -1,0 +1,4 @@
+requests
+pyyaml
+statsmodels
+psycopg2-binary

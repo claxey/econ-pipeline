@@ -1,0 +1,4 @@
+source_id,name,provider,indicator_code,url,frequency,provider_last_updated,last_successful_pull
+gdp_growth,GDP growth (annual %),World Bank,NY.GDP.MKTP.KD.ZG,https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG,annual,2026-10-08,2026-11-01T05:21:41+00:00
+cpi_inflation,"Inflation, consumer prices (annual %)",World Bank,FP.CPI.TOTL.ZG,https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG,annual,2026-10-08,2026-11-01T05:21:41+00:00
+unemployment,"Unemployment, total (% of labour force)",World Bank,SL.UEM.TOTL.ZS,https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS,annual,2026-10-08,2026-11-01T05:21:41+00:00

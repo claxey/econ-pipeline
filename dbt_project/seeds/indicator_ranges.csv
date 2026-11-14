@@ -1,0 +1,4 @@
+source_id,min_value,max_value
+gdp_growth,-50,50
+cpi_inflation,-10,100
+unemployment,0,40

@@ -1,0 +1,22 @@
+# Source registry: every dataset the pipeline pulls, with its URL and release cadence.
+countries: [IND, CHN, USA, GBR, JPN]
+start_year: 2000
+sources:
+  - id: gdp_growth
+    name: GDP growth (annual %)
+    provider: World Bank
+    indicator: NY.GDP.MKTP.KD.ZG
+    docs_url: https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG
+    frequency: annual
+  - id: cpi_inflation
+    name: Inflation, consumer prices (annual %)
+    provider: World Bank
+    indicator: FP.CPI.TOTL.ZG
+    docs_url: https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG
+    frequency: annual
+  - id: unemployment
+    name: Unemployment, total (% of labour force)
+    provider: World Bank
+    indicator: SL.UEM.TOTL.ZS
+    docs_url: https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS
+    frequency: annual

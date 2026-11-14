@@ -1,0 +1,13 @@
+version: 2
+
+models:
+  - name: rpt_latest_indicators
+    description: Latest value, change, 5-year average, rank and next-year forecast per indicator and country.
+    tests:
+      - unique_combination:
+          columns: [source_id, country_code]
+    columns:
+      - name: latest_value
+        tests: [not_null]
+      - name: country_name
+        tests: [not_null]

@@ -1,0 +1,19 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: Append-only copy of what the World Bank API returned, written by Python/Airflow.
+    tables:
+      - name: world_bank_observations
+        loaded_at_field: loaded_at
+        freshness:
+          warn_after: {count: 8, period: day}
+          error_after: {count: 15, period: day}
+      - name: ingest_runs
+      - name: source_catalog
+  - name: forecasts
+    schema: forecasts
+    description: ARIMA forecasts written by the Airflow forecast task.
+    tables:
+      - name: indicator_forecasts

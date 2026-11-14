@@ -1,0 +1,4 @@
+-r requirements.txt
+pytest
+pgserver                 # embedded Postgres, used by the warehouse tests
+# Optional: apache-airflow==2.10.5 (with its constraints file) to also run the DAG structure test

@@ -1,0 +1,57 @@
+# Local setup: Postgres (the warehouse and Airflow's metadata) plus Airflow.
+# Passwords here are for local use only. Change them before using this anywhere else.
+services:
+  warehouse:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: econ
+      POSTGRES_PASSWORD: econ
+      POSTGRES_DB: econ
+    ports:
+      - "5433:5432"          # 5433 on your machine so it does not clash with a local Postgres
+    volumes:
+      - warehouse-data:/var/lib/postgresql/data
+      - ./docker/init-airflow-db.sql:/docker-entrypoint-initdb.d/init-airflow-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U econ -d econ"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  airflow:
+    build: ./airflow
+    depends_on:
+      warehouse:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://econ:econ@warehouse:5432/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      PROJECT_DIR: /opt/airflow/project
+      PYTHONPATH: /opt/airflow/project
+      PYTHONDONTWRITEBYTECODE: "1"
+      RAW_DIR: /opt/airflow/data/raw
+      WAREHOUSE_URL: postgresql+psycopg2://econ:econ@warehouse:5432/econ
+      DBT_HOST: warehouse
+      DBT_PORT: "5432"
+      DBT_USER: econ
+      DBT_PASSWORD: econ
+      DBT_DBNAME: econ
+      DBT_TARGET_PATH: /tmp/dbt_target
+      DBT_LOG_PATH: /tmp/dbt_logs
+      DBT_SEND_ANONYMOUS_USAGE_STATS: "False"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - .:/opt/airflow/project
+      - airflow-data:/opt/airflow/data
+    command: >
+      bash -c "airflow db migrate &&
+      (airflow users create --username admin --password admin --firstname Admin --lastname User
+      --role Admin --email admin@example.com || true) &&
+      (airflow scheduler &) && exec airflow webserver"
+
+volumes:
+  warehouse-data:
+  airflow-data:

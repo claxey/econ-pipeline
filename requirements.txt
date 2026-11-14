@@ -1,0 +1,9 @@
+pandas
+requests
+pyyaml
+statsmodels
+streamlit
+groq
+defusedxml
+sqlalchemy
+psycopg2-binary
