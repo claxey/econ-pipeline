@@ -4,6 +4,7 @@ import sqlite3
 
 import pandas as pd
 import streamlit as st
+import yaml
 
 from pipeline.bootstrap import ensure_data
 from pipeline.interpret import build_facts, interpret
@@ -34,7 +35,7 @@ WAREHOUSE_URL = secret("WAREHOUSE_URL")
 
 
 @st.cache_resource(show_spinner="First start: downloading data from the World Bank...")
-def first_run():
+def first_run(_bootstrap_revision):
     return ensure_data(DB, "sources.yaml", TRACKER)
 
 
@@ -47,7 +48,7 @@ try:
     if WAREHOUSE_URL:
         data = read_warehouse(warehouse_engine(WAREHOUSE_URL))   
     else:
-        first_run()                                          
+        first_run("retry-missing-indicators-v2")
         data = read_sqlite(DB, TRACKER)
 except Exception as exc:
     st.error(f"Could not load the data: {exc}")
@@ -60,6 +61,17 @@ st.caption("Data source: " + ("Postgres warehouse (dbt models)" if data["mode"] 
 if obs.empty:
     st.warning("There are no observations yet. Run the pipeline first.")
     st.stop()
+
+if data["mode"] == "sqlite":
+    with open("sources.yaml", encoding="utf-8") as source_file:
+        expected_sources = {source["id"] for source in yaml.safe_load(source_file)["sources"]}
+    missing_sources = expected_sources - set(obs["source_id"].dropna().unique())
+    if missing_sources:
+        st.warning(
+            "Some indicators are not available yet: "
+            + ", ".join(sorted(missing_sources))
+            + ". Check the Run log for download errors. Reload the app later to retry."
+        )
 
 ok_runs = log[log["status"] == "ok"]
 with st.expander("Welcome, researchers: read this first", expanded=True):
